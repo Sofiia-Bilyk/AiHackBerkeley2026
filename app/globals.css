@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
+/* ---- Connect design tokens — warm, editorial, cultural ---- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf6ef; /* warm paper */
+  --surface: #fffdfa;
+  --surface-2: #f3ece0;
+  --foreground: #241f1a; /* warm ink */
+  --muted: #6f655a;
+  --line: #e7ddcd;
+  --primary: #b4541f; /* terracotta */
+  --primary-ink: #fff8f2;
+  --ring: #d98a52;
+
+  /* per-community accent — overridden inline on community surfaces */
+  --accent-from: #b4541f;
+  --accent-to: #e0a458;
+  --accent-soft: #f6ede0;
+  --accent-ink: #7a3a14;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-accent-from: var(--accent-from);
+  --color-accent-to: var(--accent-to);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-sans-stack);
+  --font-display: var(--font-display-stack);
+
+  --radius-card: 1rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01";
 }
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* subtle folk-textile texture for hero surfaces */
+.texture-weave {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 8px);
+}
+
+.accent-gradient {
+  background-image: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-rise { animation: rise 0.35s ease both; }
