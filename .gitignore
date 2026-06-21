@@ -2,6 +2,10 @@
 
 # dependencies
 /node_modules
+/.venv
+__pycache__/
+*.py[cod]
+.pytest_cache/
 /.pnp
 .pnp.*
 .yarn/*
@@ -43,6 +47,7 @@ next-env.d.ts
 
 # local store snapshot (reseeds itself)
 /data
+/backend/instance/*.db
 
 # local Claude Code tooling config
 /.claude

@@ -1,0 +1,44 @@
+[
+  {
+    "location": "berkeley",
+    "name": "Berkeley Community Meeting Hall",
+    "address": "2100 Martin Luther King Jr Way, Berkeley, CA",
+    "phone_number": "+15105550101",
+    "website_url": "https://example.org/berkeley-community-hall",
+    "maps_url": "https://maps.google.com/?q=Berkeley+Community+Meeting+Hall",
+    "rating": 4.7,
+    "review_count": 184,
+    "estimated_cost": 120,
+    "capacity": 60,
+    "accessibility_notes": "Wheelchair-accessible entrance and restroom",
+    "source_place_id": "mock-berkeley-community-hall"
+  },
+  {
+    "location": "berkeley",
+    "name": "West Berkeley Library Community Room",
+    "address": "1125 University Ave, Berkeley, CA",
+    "phone_number": "+15105550102",
+    "website_url": "https://example.org/west-berkeley-library-room",
+    "maps_url": "https://maps.google.com/?q=West+Berkeley+Library",
+    "rating": 4.6,
+    "review_count": 96,
+    "estimated_cost": 40,
+    "capacity": 35,
+    "accessibility_notes": "Step-free access and accessible restroom",
+    "source_place_id": "mock-west-berkeley-library"
+  },
+  {
+    "location": "berkeley",
+    "name": "Ashby Arts Studio",
+    "address": "2900 Adeline St, Berkeley, CA",
+    "phone_number": "+15105550103",
+    "website_url": "https://example.org/ashby-arts-studio",
+    "maps_url": "https://maps.google.com/?q=Ashby+Arts+Studio",
+    "rating": 4.4,
+    "review_count": 51,
+    "estimated_cost": 175,
+    "capacity": 45,
+    "accessibility_notes": "Ground-floor entrance",
+    "source_place_id": "mock-ashby-arts-studio"
+  }
+]

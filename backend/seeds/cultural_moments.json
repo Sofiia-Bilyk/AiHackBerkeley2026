@@ -1,0 +1,90 @@
+[
+  {
+    "nationality": "Ghanaian",
+    "title": "Ghana Independence Day",
+    "type": "national_holiday",
+    "month": 3,
+    "day": 6,
+    "is_recurring": true,
+    "description": "Ghana marks its 1957 independence with public celebrations, music, food, and reflection on national history.",
+    "suggested_event_types": ["jollof_dinner", "music_night", "community_celebration"],
+    "planning_lead_days": 30
+  },
+  {
+    "nationality": "Nigerian",
+    "title": "Nigerian Independence Day",
+    "type": "national_holiday",
+    "month": 10,
+    "day": 1,
+    "is_recurring": true,
+    "description": "Nigeria commemorates independence in 1960 through community gatherings, cultural performances, and shared food.",
+    "suggested_event_types": ["potluck", "cultural_showcase", "music_night"],
+    "planning_lead_days": 30
+  },
+  {
+    "nationality": "Ukrainian",
+    "title": "Pysanky Season",
+    "type": "tradition",
+    "month": 4,
+    "day": 1,
+    "is_recurring": true,
+    "description": "Pysanky are Ukrainian eggs decorated with symbolic patterns using a wax-resist method, traditionally made around Easter.",
+    "suggested_event_types": ["craft_workshop", "family_event"],
+    "planning_lead_days": 21
+  },
+  {
+    "nationality": "Indian",
+    "title": "Indian Independence Day",
+    "type": "national_holiday",
+    "month": 8,
+    "day": 15,
+    "is_recurring": true,
+    "description": "India commemorates independence in 1947 with flag ceremonies, cultural programs, music, and community gatherings.",
+    "suggested_event_types": ["community_celebration", "cultural_showcase", "picnic"],
+    "planning_lead_days": 30
+  },
+  {
+    "nationality": "Mexican",
+    "title": "Mexican Independence Day",
+    "type": "national_holiday",
+    "month": 9,
+    "day": 16,
+    "is_recurring": true,
+    "description": "Mexico celebrates the beginning of its independence movement with el Grito, music, regional foods, and public festivities.",
+    "suggested_event_types": ["community_celebration", "food_festival", "music_night"],
+    "planning_lead_days": 30
+  },
+  {
+    "nationality": "Brazilian",
+    "title": "Brazilian Independence Day",
+    "type": "national_holiday",
+    "month": 9,
+    "day": 7,
+    "is_recurring": true,
+    "description": "Brazil commemorates independence in 1822 with civic events, music, food, and community celebrations.",
+    "suggested_event_types": ["community_celebration", "dance_workshop", "cookout"],
+    "planning_lead_days": 30
+  },
+  {
+    "nationality": "Chinese",
+    "title": "National Day of China",
+    "type": "national_holiday",
+    "month": 10,
+    "day": 1,
+    "is_recurring": true,
+    "description": "National Day commemorates the founding of the People's Republic of China in 1949 and is commonly marked by gatherings and festivities.",
+    "suggested_event_types": ["community_dinner", "cultural_showcase", "family_event"],
+    "planning_lead_days": 30
+  },
+  {
+    "nationality": "Korean",
+    "title": "National Liberation Day of Korea",
+    "type": "national_holiday",
+    "month": 8,
+    "day": 15,
+    "is_recurring": true,
+    "description": "Gwangbokjeol commemorates Korea's liberation in 1945 and is observed by Korean communities in both South and North Korea.",
+    "suggested_event_types": ["community_dinner", "history_discussion", "cultural_showcase"],
+    "planning_lead_days": 30
+  }
+]
