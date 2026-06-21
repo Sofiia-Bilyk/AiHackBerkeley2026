@@ -60,6 +60,7 @@ export default async function MembersPage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 text-sm font-medium">
                   {member.name}
+                  {/* eslint-disable-next-line react-hooks/purity -- server-rendered freshness check */}
                   {Date.now() - +new Date(member.joinedAt) < 7 * 86400000 && <Badge tone="green">new</Badge>}
                   {member.restrictedUntil && new Date(member.restrictedUntil) > new Date() && <Badge tone="red">restricted</Badge>}
                 </div>

@@ -37,17 +37,14 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
 
   const tasks: TaskView[] = db.tasksOf(event.id).map((t) => {
     const assignee = t.assigneeProfileId ? db.profile(t.assigneeProfileId) : undefined;
-    const latest = db.evidenceOf(t.id)[0];
     return {
       id: t.id,
       title: t.title,
       detail: t.detail,
-      evidenceHint: t.evidenceHint,
       status: t.status,
       critical: t.critical,
       dueInDays: dueInDays(event.startsAt, t.dueOffsetDays),
       assignee: assignee ? { id: assignee.id, name: assignee.name, color: assignee.avatarColor } : undefined,
-      latestVerdict: latest ? { verdict: latest.verdict, confidence: latest.confidence, reasoning: latest.reasoning } : undefined,
     };
   });
 
@@ -144,7 +141,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
                 <div>
                   <h2 className="font-display text-lg font-semibold">Coordination tasks</h2>
                   <p className="text-sm text-[var(--muted)]">
-                    {prog.verified}/{prog.total} verified
+                    {prog.completed}/{prog.total} complete
                     {prog.open > 0 ? ` · ${prog.open} still unclaimed` : " · all claimed"}
                   </p>
                 </div>
@@ -156,7 +153,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
               <TaskList tasks={tasks} meId={me.id} restricted={restricted} />
               <p className="border-t border-[var(--line)] px-4 py-3 text-xs text-[var(--muted)]">
                 Unclaimed tasks are auto-assigned to attendees when you advance coordination. The
-                platform sends reminders and asks for photo proof, which Claude verifies.
+                platform sends reminders until each assignee marks their work complete.
               </p>
             </Card>
           ) : (

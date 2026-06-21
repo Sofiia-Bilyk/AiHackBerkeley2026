@@ -57,7 +57,7 @@ export default async function InsightsPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* category performance */}
         <Card className="p-5">
-          <SectionTitle subtitle="Average turnout by event type.">What's working</SectionTitle>
+          <SectionTitle subtitle="Average turnout by event type.">What&apos;s working</SectionTitle>
           <div className="space-y-3">
             {insights.categoryPerformance.map((c) => (
               <div key={c.category}>
@@ -107,7 +107,7 @@ export default async function InsightsPage() {
 
       {/* accountability */}
       <section>
-        <SectionTitle subtitle="Three verified failures restrict a member from events for six months.">
+        <SectionTitle subtitle="Three failures restrict a member from events for six months.">
           <span className="inline-flex items-center gap-2">
             <ShieldAlert size={18} /> Accountability
           </span>
@@ -126,7 +126,7 @@ export default async function InsightsPage() {
                   )}
                 </div>
                 <p className="text-xs text-[var(--muted)]">
-                  {failures} verified task failure{failures === 1 ? "" : "s"}. The platform deprioritizes
+                  {failures} task failure{failures === 1 ? "" : "s"}. The platform deprioritizes
                   them for critical tasks until they rebuild reliability.
                 </p>
               </div>

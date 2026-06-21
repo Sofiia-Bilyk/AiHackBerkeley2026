@@ -3,8 +3,12 @@ import { COMMUNITIES } from "@/lib/communities";
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { ArrowLeft } from "lucide-react";
 
-export default function OnboardingPage() {
+export default async function OnboardingPage({ searchParams }: { searchParams: Promise<{ community?: string }> }) {
+  const { community } = await searchParams;
   const nationalities = COMMUNITIES.map((c) => ({ nationality: c.nationality, flagEmoji: c.flagEmoji }));
+  const initialNationality = nationalities.some((item) => item.nationality === community)
+    ? community
+    : nationalities[0]?.nationality;
   return (
     <div className="texture-weave min-h-screen">
       <div className="mx-auto max-w-2xl px-5 py-10">
@@ -22,7 +26,7 @@ export default function OnboardingPage() {
             community near you and starts organizing.
           </p>
         </div>
-        <OnboardingFlow nationalities={nationalities} />
+        <OnboardingFlow nationalities={nationalities} initialNationality={initialNationality} />
       </div>
     </div>
   );

@@ -5,11 +5,11 @@ import type { CulturalEvent, Profile } from "./types";
 
 export function taskProgress(eventId: string) {
   const tasks = db.tasksOf(eventId);
-  const verified = tasks.filter((t) => t.status === "verified").length;
+  const completed = tasks.filter((t) => t.status === "completed").length;
   const open = tasks.filter((t) => t.status === "open").length;
   const claimed = tasks.filter((t) => t.status === "claimed" || t.status === "assigned").length;
-  const ratio = tasks.length ? verified / tasks.length : 0;
-  return { total: tasks.length, verified, open, claimed, ratio };
+  const ratio = tasks.length ? completed / tasks.length : 0;
+  return { total: tasks.length, completed, open, claimed, ratio };
 }
 
 export function attendance(eventId: string) {

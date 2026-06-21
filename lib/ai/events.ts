@@ -13,7 +13,6 @@ import type { ID, MaterialItem, SuggestedVenue } from "../types";
 export interface GeneratedTask {
   title: string;
   detail: string;
-  evidenceHint: string;
   critical: boolean;
   dueOffsetDays: number;
 }
@@ -39,7 +38,7 @@ You possess deep cultural knowledge: holidays, traditions, recipes, crafts, cele
 - Explain WHY it matters culturally in a warm, concrete way.
 - Produce a realistic materials list with quantities sized to the community.
 - Suggest 2-3 plausible venue TYPES (you do not book them).
-- Break execution into 4-7 concrete tasks, each with a short note on what photo evidence of completion would look like. Mark genuinely critical tasks (venue, core supplies) as critical.
+- Break execution into 4-7 concrete tasks. Mark genuinely critical tasks (venue, core supplies) as critical.
 - Weight your recommendation using the community's past attendance: if cooking outperforms language exchange, lean into what works.
 
 Keep all text in English. Be specific, never vague.`;
@@ -76,7 +75,7 @@ Propose ONE event. Return JSON with exactly these fields:
   "recommendedAsMajor": boolean,
   "suggestedVenues": [{ "name": string, "type": string, "why": string }],
   "materials": [{ "item": string, "quantity": string }],
-  "tasks": [{ "title": string, "detail": string, "evidenceHint": string, "critical": boolean, "dueOffsetDays": number }]
+  "tasks": [{ "title": string, "detail": string, "critical": boolean, "dueOffsetDays": number }]
 }`;
 
     const data = await completeJson<Omit<GeneratedEvent, "source">>(SYSTEM, user, 3200);
@@ -131,15 +130,42 @@ function fallbackEvent(
         { item: "Portable speaker", quantity: "1" },
       ],
       tasks: [
-        { title: "Reserve the picnic spot", detail: "Book or scout a shaded lawn area.", evidenceHint: "Photo of the reserved spot or confirmation.", critical: true, dueOffsetDays: 4 },
-        { title: "Coordinate the potluck", detail: "Make sure dishes don't all overlap.", evidenceHint: "Photo of the signup list or spread.", critical: false, dueOffsetDays: 2 },
-        { title: "Bring decorations", detail: "Blue & yellow bunting and a flag.", evidenceHint: "Photo of the decorations.", critical: false, dueOffsetDays: 2 },
-        { title: "Set up music", detail: "Speaker + a folk playlist.", evidenceHint: "Photo of the speaker setup.", critical: false, dueOffsetDays: 1 },
+        { title: "Reserve the picnic spot", detail: "Book or scout a shaded lawn area.", critical: true, dueOffsetDays: 4 },
+        { title: "Coordinate the potluck", detail: "Make sure dishes don't all overlap.", critical: false, dueOffsetDays: 2 },
+        { title: "Bring decorations", detail: "Blue & yellow bunting and a flag.", critical: false, dueOffsetDays: 2 },
+        { title: "Set up music", detail: "Speaker + a folk playlist.", critical: false, dueOffsetDays: 1 },
       ],
       source: "fallback",
     };
   }
-  // Nigerian (and generic) fallback
+  if (nationality !== "Nigerian") {
+    return {
+      title: `${nationality} Community Gathering`,
+      summary: `A welcoming ${nationality} cultural gathering with shared food, music, stories, and activities.`,
+      culturalSignificance: significance ?? `A chance for the local ${nationality} community to share traditions, build relationships, and keep culture active across generations.`,
+      participantInstructions: "Bring a favorite dish, song, story, or tradition to share. Families and newcomers are welcome.",
+      category: "meetup",
+      holiday: occasionName,
+      recommendedAsMajor: major,
+      suggestedVenues: [
+        { name: "Local community center", type: "Community venue", why: "Accessible indoor space for food, conversation, and activities." },
+        { name: "Neighborhood park", type: "Public park", why: "Flexible outdoor space for a relaxed gathering." },
+      ],
+      materials: [
+        { item: "Shared dishes", quantity: `for ~${Math.max(size * 2, 10)}` },
+        { item: "Cultural decorations", quantity: "1 set" },
+        { item: "Portable speaker", quantity: "1" },
+      ],
+      tasks: [
+        { title: "Confirm the venue", detail: "Reserve an accessible gathering space.", critical: true, dueOffsetDays: 4 },
+        { title: "Coordinate shared food", detail: "Organize dishes and dietary information.", critical: true, dueOffsetDays: 2 },
+        { title: "Plan cultural activities", detail: "Choose music, stories, games, or a simple cultural activity.", critical: false, dueOffsetDays: 2 },
+        { title: "Welcome participants", detail: "Prepare signs and greet newcomers.", critical: false, dueOffsetDays: 1 },
+      ],
+      source: "fallback",
+    };
+  }
+  // Nigerian fallback
   return {
     title: occasionName?.includes("Yam")
       ? "New Yam Festival Gathering"
@@ -164,10 +190,10 @@ function fallbackEvent(
       { item: "Drums / percussion", quantity: "a few" },
     ],
     tasks: [
-      { title: "Confirm the venue/permit", detail: "Reserve the park area and confirm cooking is allowed.", evidenceHint: "Photo of the permit or confirmation.", critical: true, dueOffsetDays: 4 },
-      { title: "Cook the jollof", detail: "Lead the main dish.", evidenceHint: "Photo of the prepared rice.", critical: true, dueOffsetDays: 1 },
-      { title: "Bring drinks", detail: "Zobo, chapman and water.", evidenceHint: "Photo of the drinks.", critical: false, dueOffsetDays: 2 },
-      { title: "Organize drumming/music", detail: "Gather percussion and a playlist.", evidenceHint: "Photo of the instruments.", critical: false, dueOffsetDays: 2 },
+      { title: "Confirm the venue/permit", detail: "Reserve the park area and confirm cooking is allowed.", critical: true, dueOffsetDays: 4 },
+      { title: "Cook the jollof", detail: "Lead the main dish.", critical: true, dueOffsetDays: 1 },
+      { title: "Bring drinks", detail: "Zobo, chapman and water.", critical: false, dueOffsetDays: 2 },
+      { title: "Organize drumming/music", detail: "Gather percussion and a playlist.", critical: false, dueOffsetDays: 2 },
     ],
     source: "fallback",
   };

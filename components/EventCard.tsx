@@ -57,7 +57,7 @@ export function EventCard({ event }: { event: CulturalEvent }) {
               <div className="mb-1 flex items-center justify-between text-xs text-[var(--muted)]">
                 <span>Coordination</span>
                 <span>
-                  {prog.verified}/{prog.total} done
+                  {prog.completed}/{prog.total} done
                   {prog.open > 0 && ` · ${prog.open} unclaimed`}
                 </span>
               </div>

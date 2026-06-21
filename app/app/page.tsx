@@ -24,6 +24,7 @@ export default async function Dashboard() {
   const nextOccasion = occasions[0];
   const insights = computeInsights(communityId);
   const content = db.contentOf(communityId);
+  // eslint-disable-next-line react-hooks/purity -- server-rendered freshness check
   const isNewcomer = Date.now() - +new Date(me.joinedAt) < 4 * 86400000;
 
   return (
@@ -120,6 +121,7 @@ export default async function Dashboard() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-sm font-medium">
                     {member.name}
+                    {/* eslint-disable-next-line react-hooks/purity -- server-rendered freshness check */}
                     {Date.now() - +new Date(member.joinedAt) < 7 * 86400000 && <Badge tone="green">new</Badge>}
                   </div>
                   <div className="truncate text-xs text-[var(--muted)]">{member.bio ?? member.city}</div>

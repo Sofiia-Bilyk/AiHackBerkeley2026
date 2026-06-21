@@ -29,13 +29,6 @@ function profile(p: Partial<Profile> & Pick<Profile, "id" | "name" | "city" | "l
     joinedAt: ISO(-40),
     strikes: 0,
     isDemoSeed: true,
-    verification: {
-      status: "verified",
-      method: "ai-document",
-      extractedNationality: p.primaryNationality,
-      confidence: 0.96,
-      note: "Nationality confirmed from uploaded passport (AI extraction).",
-    },
     ...p,
   } as Profile;
 }
@@ -50,7 +43,7 @@ const profiles: Profile[] = [
   profile({ id: "prof_taras", name: "Taras Melnyk", city: "Palo Alto, CA", lat: 37.4419, lng: -122.143, primaryNationality: UA, avatarColor: "#0891b2", bio: "Engineer by day, bandura player by night.", joinedAt: ISO(-22) }),
   profile({ id: "prof_yuliia", name: "Yuliia Shevchenko", city: "San Jose, CA", lat: 37.3382, lng: -121.8863, primaryNationality: UA, avatarColor: "#db2777", bio: "New to the Bay. Looking to keep traditions alive far from home.", joinedAt: ISO(-12) }),
   profile({ id: "prof_andriy", name: "Andriy Bondar", city: "San Francisco, CA", lat: 37.7749, lng: -122.4194, primaryNationality: UA, avatarColor: "#ca8a04", bio: "Always says he'll bring something, sometimes forgets.", joinedAt: ISO(-35), strikes: 2 }),
-  profile({ id: "prof_sofia", name: "Sofia Romanenko", city: "Berkeley, CA", lat: 37.8688, lng: -122.2588, primaryNationality: UA, avatarColor: "#16a34a", bio: "Just moved here for grad school. Hoping to meet people.", joinedAt: ISO(-1), verification: { status: "verified", method: "ai-document", extractedNationality: UA, confidence: 0.94, note: "Nationality confirmed from uploaded ID (AI extraction)." } }),
+  profile({ id: "prof_sofia", name: "Sofia Romanenko", city: "Berkeley, CA", lat: 37.8688, lng: -122.2588, primaryNationality: UA, avatarColor: "#16a34a", bio: "Just moved here for grad school. Hoping to meet people.", joinedAt: ISO(-1) }),
 
   // Nigerian — Bay Area
   profile({ id: "prof_chioma", name: "Chioma Okafor", city: "Oakland, CA", lat: 37.8044, lng: -122.2712, primaryNationality: NG, avatarColor: "#0f9d58", bio: "Igbo. Believes jollof is a love language.", joinedAt: ISO(-28) }),
@@ -116,12 +109,12 @@ const pysanky: CulturalEvent = {
 };
 
 const pysankyTasks: EventTask[] = [
-  task("task_eggs", "evt_pysanky", "Bring 24 white eggs", "Plain white chicken eggs, ideally room temperature so they don't crack when blown.", "A photo clearly showing the eggs — enough to count roughly two dozen.", "prof_maria", "claimed", 2, true),
-  task("task_wax", "evt_pysanky", "Source beeswax & kistka styluses", "1 lb natural beeswax plus 8 kistka styluses (fine tip).", "A photo of the beeswax block and the styluses laid out.", "prof_oksana", "verified", 4, true),
-  task("task_candles", "evt_pysanky", "Bring candles", "12 standard candles for melting wax on the kistka.", "A photo of the candles.", undefined, "open", 3, false),
-  task("task_dye", "evt_pysanky", "Provide dye kits", "4 aniline dye kits covering yellow, orange, red and black.", "A photo of the dye kits / jars.", undefined, "open", 3, true),
-  task("task_snacks", "evt_pysanky", "Arrange snacks & tea", "Light snacks and tea for about 12 people.", "A photo of the snacks and tea setup.", "prof_yuliia", "claimed", 1, false),
-  task("task_venue", "evt_pysanky", "Confirm the venue", "Lock in a venue with tables and a sink. Berkeley Fellowship Hall is first choice.", "A screenshot or photo of the booking confirmation.", "prof_taras", "claimed", 5, true),
+  task("task_eggs", "evt_pysanky", "Bring 24 white eggs", "Plain white chicken eggs, ideally room temperature so they don't crack when blown.", "prof_maria", "claimed", 2, true),
+  task("task_wax", "evt_pysanky", "Source beeswax & kistka styluses", "1 lb natural beeswax plus 8 kistka styluses (fine tip).", "prof_oksana", "completed", 4, true),
+  task("task_candles", "evt_pysanky", "Bring candles", "12 standard candles for melting wax on the kistka.", undefined, "open", 3, false),
+  task("task_dye", "evt_pysanky", "Provide dye kits", "4 aniline dye kits covering yellow, orange, red and black.", undefined, "open", 3, true),
+  task("task_snacks", "evt_pysanky", "Arrange snacks & tea", "Light snacks and tea for about 12 people.", "prof_yuliia", "claimed", 1, false),
+  task("task_venue", "evt_pysanky", "Confirm the venue", "Lock in a venue with tables and a sink. Berkeley Fellowship Hall is first choice.", "prof_taras", "claimed", 5, true),
 ];
 
 function task(
@@ -129,29 +122,15 @@ function task(
   eventId: string,
   title: string,
   detail: string,
-  evidenceHint: string,
   assigneeProfileId: string | undefined,
   status: EventTask["status"],
   dueOffsetDays: number,
   critical: boolean,
 ): EventTask {
-  return { id, eventId, title, detail, evidenceHint, assigneeProfileId, status, dueOffsetDays, critical, createdAt: ISO(-6) };
+  return { id, eventId, title, detail, assigneeProfileId, status, dueOffsetDays, critical, createdAt: ISO(-6) };
 }
 
-// One task already verified — shows the closed loop on the dashboard.
-const seededEvidence = [
-  {
-    id: "ev_wax",
-    taskId: "task_wax",
-    profileId: "prof_oksana",
-    imageRef: "seed:beeswax",
-    verdict: "completed" as const,
-    confidence: 0.93,
-    reasoning:
-      "Image shows a block of natural beeswax and several fine-tip kistka styluses arranged on a table, matching the required supplies. Task appears completed.",
-    createdAt: ISO(-2),
-  },
-];
+// One task is already complete to show the closed loop on the dashboard.
 
 // ---------------------------------------------------------------------------
 // A second Ukrainian event in "gauging" state (interest-first)
@@ -272,11 +251,11 @@ const jollof: CulturalEvent = {
 };
 
 const jollofTasks: EventTask[] = [
-  task("task_rice", "evt_jollof", "Bring rice & tomato base", "10 lb parboiled long-grain rice plus tomatoes, red pepper and onions.", "A photo of the rice bags and tomato/pepper haul.", "prof_chioma", "claimed", 2, true),
-  task("task_burners", "evt_jollof", "Provide burners & pots", "4 propane burner setups with large pots.", "A photo of the burners and pots.", undefined, "open", 3, true),
-  task("task_protein", "evt_jollof", "Marinate proteins", "Chicken and beef for ~24, seasoned the night before.", "A photo of the marinated proteins.", "prof_emeka", "claimed", 1, false),
-  task("task_drinks", "evt_jollof", "Bring drinks", "Zobo, chapman and water for ~24.", "A photo of the drinks.", undefined, "open", 2, false),
-  task("task_jvenue", "evt_jollof", "Confirm park permit", "Reserve the Mosswood Park picnic area and confirm burner use is allowed.", "A photo or screenshot of the permit confirmation.", "prof_ade", "claimed", 4, true),
+  task("task_rice", "evt_jollof", "Bring rice & tomato base", "10 lb parboiled long-grain rice plus tomatoes, red pepper and onions.", "prof_chioma", "claimed", 2, true),
+  task("task_burners", "evt_jollof", "Provide burners & pots", "4 propane burner setups with large pots.", undefined, "open", 3, true),
+  task("task_protein", "evt_jollof", "Marinate proteins", "Chicken and beef for ~24, seasoned the night before.", "prof_emeka", "claimed", 1, false),
+  task("task_drinks", "evt_jollof", "Bring drinks", "Zobo, chapman and water for ~24.", undefined, "open", 2, false),
+  task("task_jvenue", "evt_jollof", "Confirm park permit", "Reserve the Mosswood Park picnic area and confirm burner use is allowed.", "prof_ade", "claimed", 4, true),
 ];
 
 // ---------------------------------------------------------------------------
@@ -333,7 +312,7 @@ const messages: Message[] = [
   msg("m2", "evt_pysanky", "So excited for this! I can bring the eggs 🥚", { author: "prof_maria", ago: 5.5 }),
   msg("m3", "evt_pysanky", "Maria volunteered to bring 24 white eggs. Thank you, Maria.", { system: true, ago: 5.4 }),
   msg("m4", "evt_pysanky", "I'll take beeswax and the styluses — I have a supplier.", { author: "prof_oksana", ago: 5 }),
-  msg("m5", "evt_pysanky", "Beeswax & styluses confirmed by Oksana, with photo evidence. ✅", { system: true, ago: 2 }),
+  msg("m5", "evt_pysanky", "Oksana marked beeswax & styluses complete. ✅", { system: true, ago: 2 }),
   msg("m6", "evt_pysanky", "2 tasks still need a volunteer: candles and dye kits. They're due in 3 days.", { system: true, ago: 1 }),
   msg("m7", "evt_jollof", "Jollof Rice Cook-Off is planned. 5 tasks created — claim what you can!", { system: true, ago: 4 }),
   msg("m8", "evt_jollof", "Rice and tomato base is on me 🍅", { author: "prof_chioma", ago: 3.5 }),
@@ -346,9 +325,9 @@ const messages: Message[] = [
 
 const participation: ParticipationRecord[] = [
   { id: "pr1", profileId: "prof_andriy", eventId: "evt_borscht", taskId: undefined, outcome: "failed", note: "Committed to bring bread, did not show with it.", createdAt: ISO(-14) },
-  { id: "pr2", profileId: "prof_andriy", eventId: "evt_embroidery", taskId: undefined, outcome: "failed", note: "Claimed supplies task, no evidence submitted by deadline.", createdAt: ISO(-28) },
-  { id: "pr3", profileId: "prof_maria", eventId: "evt_borscht", outcome: "completed", note: "Delivered and verified.", createdAt: ISO(-14) },
-  { id: "pr4", profileId: "prof_oksana", eventId: "evt_paska", outcome: "completed", note: "Delivered and verified.", createdAt: ISO(-35) },
+  { id: "pr2", profileId: "prof_andriy", eventId: "evt_embroidery", taskId: undefined, outcome: "failed", note: "Claimed supplies task, did not complete it by the deadline.", createdAt: ISO(-28) },
+  { id: "pr3", profileId: "prof_maria", eventId: "evt_borscht", outcome: "completed", note: "Delivered and completed.", createdAt: ISO(-14) },
+  { id: "pr4", profileId: "prof_oksana", eventId: "evt_paska", outcome: "completed", note: "Delivered and completed.", createdAt: ISO(-35) },
 ];
 
 // ---------------------------------------------------------------------------
@@ -380,7 +359,6 @@ export function seedDatabase(database: Database): void {
   database.memberships = memberships;
   database.events = [pysanky, varenyky, ...completedUa, jollof, ...completedNg];
   database.tasks = [...pysankyTasks, ...jollofTasks];
-  database.evidence = seededEvidence;
   database.rsvps = rsvps;
   database.messages = messages;
   database.participation = participation;

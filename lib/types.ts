@@ -38,18 +38,9 @@ export interface Profile {
   lng: number;
   primaryNationality: string; // matches a Community.nationality
   secondaryInterest?: string;
-  /** Verification of nationality via AI-assisted ID extraction (MVP-grade). */
-  verification: {
-    status: "unverified" | "pending" | "verified";
-    method?: "ai-document";
-    extractedName?: string;
-    extractedNationality?: string;
-    confidence?: number;
-    note?: string;
-  };
   bio?: string;
   joinedAt: string;
-  /** Accountability: rolling count of verified task failures. */
+  /** Accountability: rolling count of task failures and no-shows. */
   strikes: number;
   /** ISO date until which the user is restricted from events, if any. */
   restrictedUntil?: string;
@@ -114,35 +105,17 @@ export type TaskStatus =
   | "open" // nobody claimed
   | "claimed" // a member volunteered
   | "assigned" // AI auto-assigned to a member
-  | "submitted" // evidence uploaded, awaiting/under verification
-  | "verified" // evidence confirmed complete
-  | "failed"; // verified incomplete / deadline missed
+  | "completed"; // assignee marked the task complete
 
 export interface EventTask {
   id: ID;
   eventId: ID;
   title: string;
   detail: string;
-  /** What proof should look like — fed to the vision verifier. */
-  evidenceHint: string;
   assigneeProfileId?: ID;
   status: TaskStatus;
   dueOffsetDays: number; // due N days before event
   critical: boolean; // venue / core supplies vs. nice-to-have
-  createdAt: string;
-}
-
-export type Verdict = "completed" | "uncertain" | "incomplete";
-
-export interface TaskEvidence {
-  id: ID;
-  taskId: ID;
-  profileId: ID;
-  /** Data URL or path of the uploaded photo. */
-  imageRef: string;
-  verdict: Verdict;
-  confidence: number; // 0..1
-  reasoning: string;
   createdAt: string;
 }
 

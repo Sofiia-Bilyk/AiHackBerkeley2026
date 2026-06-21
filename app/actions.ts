@@ -6,9 +6,7 @@ import { db } from "@/lib/store";
 import { clearSession, getCurrentProfile, setSession } from "@/lib/session";
 import { generateEvent } from "@/lib/ai/events";
 import { runCoordinatorPass } from "@/lib/ai/coordinator";
-import { verifyEvidence } from "@/lib/ai/verify";
 import { complete, hasApiKey } from "@/lib/ai/client";
-import { extractFromId, type IdExtraction } from "@/lib/ai/idextract";
 import { communityById, communityByNationality } from "@/lib/communities";
 import type { Profile } from "@/lib/types";
 import { daysFromNow, dmChannelId, newId, nowIso } from "@/lib/utils";
@@ -74,7 +72,6 @@ export async function generateEventAction(communityId: string) {
       eventId,
       title: t.title,
       detail: t.detail,
-      evidenceHint: t.evidenceHint,
       assigneeProfileId: undefined,
       status: "open",
       dueOffsetDays: t.dueOffsetDays,
@@ -147,7 +144,6 @@ export async function commitEventAction(eventId: string) {
     eventId,
     title: t.title,
     detail: t.detail,
-    evidenceHint: t.evidenceHint,
     assigneeProfileId: undefined,
     status: "open",
     dueOffsetDays: t.dueOffsetDays,
@@ -211,78 +207,26 @@ export async function advanceCoordinatorAction(eventId: string) {
 }
 
 // --------------------------------------------------------------------------
-// Evidence + verification (Feature 3) + accountability
+// Task completion
 // --------------------------------------------------------------------------
 
-export async function submitEvidenceAction(taskId: string, dataUrl: string) {
+export async function completeTaskAction(taskId: string) {
   const me = await getCurrentProfile();
   if (!me) throw new Error("Not signed in");
   const task = db.task(taskId);
   if (!task) throw new Error("Unknown task");
 
-  const parsed = parseDataUrl(dataUrl);
-  task.status = "submitted";
-
-  const result = await verifyEvidence(
-    task,
-    parsed ?? { mediaType: "image/jpeg", base64: "" },
-  );
-
-  db.raw.evidence.push({
-    id: newId("ev"),
-    taskId,
-    profileId: me.id,
-    imageRef: dataUrl,
-    verdict: result.verdict,
-    confidence: result.confidence,
-    reasoning: result.reasoning,
-    createdAt: nowIso(),
+  if (task.assigneeProfileId !== me.id) throw new Error("Only the assignee can complete this task");
+  if (task.status !== "claimed" && task.status !== "assigned") throw new Error("Task cannot be completed");
+  task.status = "completed";
+  db.raw.participation.push({
+    id: newId("pr"), profileId: me.id, eventId: task.eventId, taskId,
+    outcome: "completed", note: `Completed "${task.title}".`, createdAt: nowIso(),
   });
-
-  const event = db.event(task.eventId);
-  if (result.verdict === "completed") {
-    task.status = "verified";
-    db.raw.participation.push({
-      id: newId("pr"),
-      profileId: me.id,
-      eventId: task.eventId,
-      taskId,
-      outcome: "completed",
-      note: `Completed "${task.title}" — verified from photo.`,
-      createdAt: nowIso(),
-    });
-    db.raw.messages.push(systemMsg(task.eventId, `"${task.title}" is confirmed complete. Thank you, ${me.name.split(" ")[0]}.`));
-  } else if (result.verdict === "incomplete") {
-    task.status = "claimed"; // allow another attempt, but record the failure
-    applyStrike(me.id, task.eventId, taskId, `Evidence for "${task.title}" judged incomplete.`);
-    db.raw.messages.push(systemMsg(task.eventId, `The photo for "${task.title}" didn't look complete yet. ${me.name.split(" ")[0]}, please try again.`));
-  } else {
-    task.status = "claimed";
-    db.raw.messages.push(systemMsg(task.eventId, `The photo for "${task.title}" was unclear. A clearer photo would help confirm it.`));
-  }
-  void event;
+  db.raw.messages.push(systemMsg(task.eventId, `"${task.title}" is complete. Thank you, ${me.name.split(" ")[0]}.`));
 
   db.save();
   revalidatePath(`/app/events/${task.eventId}`);
-  return result;
-}
-
-function applyStrike(profileId: string, eventId: string, taskId: string, note: string) {
-  const p = db.profile(profileId);
-  if (!p) return;
-  p.strikes += 1;
-  db.raw.participation.push({
-    id: newId("pr"),
-    profileId,
-    eventId,
-    taskId,
-    outcome: "failed",
-    note,
-    createdAt: nowIso(),
-  });
-  if (p.strikes >= 3 && !p.restrictedUntil) {
-    p.restrictedUntil = daysFromNow(182); // ~6 months
-  }
 }
 
 // --------------------------------------------------------------------------
@@ -318,16 +262,8 @@ export async function sendDmAction(toProfileId: string, body: string) {
 }
 
 // --------------------------------------------------------------------------
-// Onboarding — AI-assisted ID extraction + account creation
+// Onboarding
 // --------------------------------------------------------------------------
-
-export async function extractIdAction(dataUrl: string, hintNationality?: string): Promise<IdExtraction> {
-  const parsed = parseDataUrl(dataUrl);
-  if (!parsed) {
-    return { confidence: 0, note: "That file couldn't be read as an image.", source: "fallback" };
-  }
-  return extractFromId(parsed, hintNationality);
-}
 
 export async function createAccountAction(formData: FormData) {
   const name = String(formData.get("name") || "").trim() || "New Member";
@@ -335,7 +271,6 @@ export async function createAccountAction(formData: FormData) {
   const city = String(formData.get("city") || "").trim() || "Berkeley, CA";
   const nationality = String(formData.get("nationality") || "Ukrainian");
   const secondary = String(formData.get("secondary") || "").trim() || undefined;
-  const verified = String(formData.get("verified") || "") === "true";
 
   const community = communityByNationality(nationality);
   // place near the community's region for the demo
@@ -354,9 +289,6 @@ export async function createAccountAction(formData: FormData) {
     lng,
     primaryNationality: nationality,
     secondaryInterest: secondary,
-    verification: verified
-      ? { status: "verified", method: "ai-document", extractedNationality: nationality, confidence: 0.95, note: "Verified via AI document extraction during onboarding." }
-      : { status: "unverified" },
     bio: "Just joined Connect.",
     joinedAt: nowIso(),
     strikes: 0,
@@ -401,10 +333,4 @@ function systemMsg(eventId: string, body: string): Message {
 
 function communityLocation(communityId: string): string {
   return communityId === "comm_ng" ? "Oakland, CA" : "Berkeley, CA";
-}
-
-function parseDataUrl(dataUrl: string): { mediaType: string; base64: string } | null {
-  const match = /^data:([^;]+);base64,(.+)$/.exec(dataUrl);
-  if (!match) return null;
-  return { mediaType: match[1], base64: match[2] };
 }

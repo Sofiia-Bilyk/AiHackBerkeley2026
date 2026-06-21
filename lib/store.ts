@@ -15,7 +15,6 @@ import type {
   ParticipationRecord,
   Profile,
   Rsvp,
-  TaskEvidence,
 } from "./types";
 import { seedDatabase } from "./seed";
 
@@ -24,7 +23,6 @@ export interface Database {
   memberships: Membership[];
   events: CulturalEvent[];
   tasks: EventTask[];
-  evidence: TaskEvidence[];
   rsvps: Rsvp[];
   messages: Message[];
   participation: ParticipationRecord[];
@@ -40,7 +38,6 @@ function emptyDb(): Database {
     memberships: [],
     events: [],
     tasks: [],
-    evidence: [],
     rsvps: [],
     messages: [],
     participation: [],
@@ -54,7 +51,18 @@ function loadFromDisk(): Database | null {
     if (fs.existsSync(SNAPSHOT_PATH)) {
       const raw = fs.readFileSync(SNAPSHOT_PATH, "utf-8");
       const parsed = JSON.parse(raw) as Database;
-      if (parsed && parsed.seeded) return parsed;
+      if (parsed && parsed.seeded) {
+        // Migrate snapshots created before task completion replaced verification.
+        parsed.tasks = parsed.tasks.map((task) => {
+          const legacyStatus = task.status as string;
+          return {
+            ...task,
+            status: legacyStatus === "verified" ? "completed" :
+              legacyStatus === "submitted" || legacyStatus === "failed" ? "claimed" : task.status,
+          };
+        });
+        return parsed;
+      }
     }
   } catch {
     // ignore corrupt snapshot — we'll reseed
@@ -72,23 +80,14 @@ function init(): Database {
   return fresh;
 }
 
-// Persist with a short debounce; evidence images are kept out of the snapshot
-// to keep it small (they live in-memory for the session).
+// Persist changes with a short debounce.
 let persistTimer: NodeJS.Timeout | null = null;
 function persist(database: Database) {
   if (persistTimer) clearTimeout(persistTimer);
   persistTimer = setTimeout(() => {
     try {
       fs.mkdirSync(path.dirname(SNAPSHOT_PATH), { recursive: true });
-      const snapshot: Database = {
-        ...database,
-        evidence: database.evidence.map((e) =>
-          e.imageRef.startsWith("data:")
-            ? { ...e, imageRef: "data:[stored-in-session]" }
-            : e,
-        ),
-      };
-      fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2));
+      fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(database, null, 2));
     } catch {
       // best-effort; demo continues from memory
     }
@@ -151,13 +150,6 @@ export const db = {
   },
   tasksOf(eventId: ID) {
     return database.tasks.filter((t) => t.eventId === eventId);
-  },
-
-  // ---- evidence ----
-  evidenceOf(taskId: ID) {
-    return database.evidence
-      .filter((e) => e.taskId === taskId)
-      .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
   },
 
   // ---- rsvps ----

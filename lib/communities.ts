@@ -4,6 +4,26 @@
 
 import type { CalendarOccasion, Community } from "./types";
 
+function bayAreaCommunity(
+  id: string,
+  nationality: string,
+  demonym: string,
+  flagEmoji: string,
+  from: string,
+  to: string,
+  soft: string,
+  ink: string,
+  primer: string,
+): Community {
+  return {
+    id, nationality, demonym, flagEmoji,
+    accent: { from, to, soft, ink },
+    region: { label: "San Francisco Bay Area", lat: 37.8715, lng: -122.273, radiusMiles: 100 },
+    primer,
+    createdAt: "2026-01-01T00:00:00.000Z",
+  };
+}
+
 export const COMMUNITIES: Community[] = [
   {
     id: "comm_ua",
@@ -43,6 +63,15 @@ export const COMMUNITIES: Community[] = [
       "(Iri Ji) honor harvest, and naming ceremonies and owambe parties bring people together.",
     createdAt: "2026-01-01T00:00:00.000Z",
   },
+  bayAreaCommunity("comm_ge", "Georgian", "Georgian", "🇬🇪", "#b91c1c", "#ffffff", "#fff1f2", "#991b1b", "Georgian culture centers hospitality, polyphonic singing, dance, wine traditions, and the supra feast led by a tamada. Khachapuri, khinkali, and seasonal celebrations bring communities together."),
+  bayAreaCommunity("comm_lt", "Lithuanian", "Lithuanian", "🇱🇹", "#fdb913", "#006a44", "#fffbea", "#14532d", "Lithuanian culture carries Baltic song, folk craft, seasonal rituals, and a strong midsummer tradition. Kūčios, Joninės, cepelinai, and communal singing connect families across generations."),
+  bayAreaCommunity("comm_pl", "Polish", "Polish", "🇵🇱", "#dc143c", "#ffffff", "#fff1f2", "#9f1239", "Polish community traditions include Wigilia, Easter basket blessings, harvest festivals, folk music, and shared foods such as pierogi, żurek, and bigos."),
+  bayAreaCommunity("comm_fr", "French", "French", "🇫🇷", "#0055a4", "#ef4135", "#eff6ff", "#1e3a8a", "French cultural life is shaped by regional food, art, language, music, and public celebration. Community tables, seasonal markets, cinema, and festivals create natural gathering points."),
+  bayAreaCommunity("comm_jp", "Japanese", "Japanese", "🇯🇵", "#bc002d", "#ffffff", "#fff1f2", "#9f1239", "Japanese culture brings together seasonal observances, food, craft, music, and respect for community. Hanami, Obon, matsuri, tea, calligraphy, and shared cooking offer rich ways to gather."),
+  bayAreaCommunity("comm_kr", "Korean", "Korean", "🇰🇷", "#0047a0", "#cd2e3a", "#eff6ff", "#1e3a8a", "Korean community life is expressed through shared meals, music, language, and seasonal holidays. Seollal, Chuseok, kimjang, traditional games, and performance connect generations."),
+  bayAreaCommunity("comm_in", "Indian", "Indian", "🇮🇳", "#ff9933", "#138808", "#fff7ed", "#9a3412", "Indian communities encompass many languages, regions, faiths, foods, and artistic traditions. Diwali, Holi, regional new years, music, dance, and communal meals provide diverse gathering points."),
+  bayAreaCommunity("comm_no", "Norwegian", "Norwegian", "🇳🇴", "#ba0c2f", "#00205b", "#fff1f2", "#881337", "Norwegian culture combines outdoor life, folk music, craft, and seasonal celebrations. Constitution Day, Midsummer, holiday baking, and traditions such as rosemaling support community connection."),
+  bayAreaCommunity("comm_se", "Swedish", "Swedish", "🇸🇪", "#006aa7", "#fecc02", "#eff6ff", "#164e63", "Swedish culture values seasonal gatherings, music, design, and shared pauses such as fika. Midsummer, Lucia, crayfish parties, and holiday baking bring communities together."),
 ];
 
 export function communityById(id: string): Community | undefined {
