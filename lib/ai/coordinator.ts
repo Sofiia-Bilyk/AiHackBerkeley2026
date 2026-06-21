@@ -69,7 +69,7 @@ export async function runCoordinatorPass(eventId: ID): Promise<CoordinatorOutcom
   for (const task of tasks) {
     if (task.assigneeProfileId) {
       const a = db.profile(task.assigneeProfileId);
-      if (a && !isAvailable(a) && task.status !== "verified") {
+      if (a && !isAvailable(a) && task.status !== "completed") {
         task.assigneeProfileId = undefined;
         task.status = "open";
       }
@@ -89,7 +89,7 @@ export async function runCoordinatorPass(eventId: ID): Promise<CoordinatorOutcom
     }
   }
 
-  // 3) reminders for outstanding (not yet verified) tasks coming due
+  // 3) reminders for outstanding tasks coming due
   for (const task of tasks) {
     if ((task.status === "claimed" || task.status === "assigned") && task.assigneeProfileId) {
       const d = dueInDays(event, task);

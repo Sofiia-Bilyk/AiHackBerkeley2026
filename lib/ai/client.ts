@@ -58,38 +58,6 @@ export async function completeJson<T>(
   return parseJson<T>(raw);
 }
 
-/** Vision call: evaluate an image (data URL or base64) against a question. */
-export async function visionJson<T>(
-  system: string,
-  question: string,
-  image: { mediaType: string; base64: string },
-  maxTokens = 700,
-): Promise<T> {
-  const res = await getClient().messages.create({
-    model: MODEL,
-    max_tokens: maxTokens,
-    system:
-      system + "\n\nRespond with ONLY a single valid JSON object. No markdown, no prose.",
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "image",
-            source: {
-              type: "base64",
-              media_type: image.mediaType as "image/jpeg" | "image/png" | "image/webp" | "image/gif",
-              data: image.base64,
-            },
-          },
-          { type: "text", text: question },
-        ],
-      },
-    ],
-  });
-  return parseJson<T>(textOf(res));
-}
-
 function textOf(res: Anthropic.Message): string {
   return res.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
