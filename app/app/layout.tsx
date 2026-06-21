@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
 import { communityById } from "@/lib/community-registry";
@@ -23,11 +24,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       {/* sidebar */}
       <aside className="sticky top-5 hidden h-[calc(100vh-2.5rem)] w-60 shrink-0 flex-col justify-between md:flex">
         <div>
-          <Link href="/app" className="mb-6 flex items-center gap-2 px-2">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg accent-gradient text-base font-bold text-white">
-              C
-            </span>
-            <span className="font-display text-lg font-semibold">Connect</span>
+          <Link href="/app" className="mb-6 block rounded-xl bg-white px-2 py-1.5 shadow-sm">
+            <Image
+              src="/logo_culture_connect_midjourney.png"
+              alt="Culture Connect"
+              width={512}
+              height={512}
+              priority
+              className="h-10 w-auto"
+            />
           </Link>
 
           {community && (
@@ -64,9 +69,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       {/* mobile top bar */}
       <div className="fixed inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)]/90 px-4 py-2.5 backdrop-blur md:hidden">
-        <Link href="/app" className="flex items-center gap-2">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg accent-gradient text-sm font-bold text-white">C</span>
-          <span className="font-display font-semibold">Connect</span>
+        <Link href="/app" className="rounded-lg bg-white px-2 py-1 shadow-sm">
+          <Image
+            src="/logo_culture_connect_midjourney.png"
+            alt="Culture Connect"
+            width={512}
+            height={512}
+            priority
+            className="h-8 w-auto"
+          />
         </Link>
         <div className="flex items-center gap-2">
           <Link href="/#communities-heading" className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--accent-ink)]">

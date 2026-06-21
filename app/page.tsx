@@ -3,6 +3,7 @@ import { Badge, Card } from "@/components/ui";
 import { allCommunities } from "@/lib/community-registry";
 import { midjourneyPastEventImages } from "@/lib/midjourney-images";
 import { CalendarDays, MapPin } from "lucide-react";
+import Image from "next/image";
 
 const pastEvents = [
   {
@@ -52,9 +53,15 @@ export default function Landing() {
     <main id="main-content" className="texture-weave min-h-screen">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:py-12">
         <header className="mb-12 max-w-3xl">
-          <div className="shape-expressive mb-6 inline-flex items-center gap-3 border border-[var(--outline-variant)] bg-[var(--surface)]/85 px-3 py-2 shadow-[0_6px_20px_rgba(33,25,35,0.08)] backdrop-blur">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl accent-gradient text-xl font-bold text-white shadow-sm">C</span>
-            <span className="font-display text-2xl font-semibold">Connect</span>
+          <div className="shape-expressive mb-6 inline-flex items-center gap-3 border border-[var(--outline-variant)] bg-white px-3 py-2 shadow-[0_6px_20px_rgba(33,25,35,0.08)] backdrop-blur">
+            <Image
+              src="/logo_culture_connect_midjourney.png"
+              alt="Culture Connect"
+              width={512}
+              height={512}
+              priority
+              className="h-14 w-auto"
+            />
             <Badge tone="accent">AI cultural-club manager</Badge>
           </div>
           <h1 className="text-emphasized font-display text-5xl font-semibold leading-[0.98] tracking-tight sm:text-7xl">

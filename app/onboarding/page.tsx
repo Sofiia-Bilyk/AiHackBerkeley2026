@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { onboardingCommunities } from "@/lib/community-registry";
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Badge, Card, SystemNotice } from "@/components/ui";
@@ -19,9 +20,17 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
           <ArrowLeft size={15} /> Back
         </Link>
         <div className="my-6 text-center">
-          <div className="mb-3 flex items-center justify-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl accent-gradient text-lg font-bold text-white">C</span>
-            <span className="font-display text-xl font-semibold">Connect</span>
+          <div className="mb-3 flex justify-center">
+            <div className="rounded-xl bg-white px-3 py-2 shadow-sm">
+              <Image
+                src="/logo_culture_connect_midjourney.png"
+                alt="Culture Connect"
+                width={512}
+                height={512}
+                priority
+                className="h-12 w-auto"
+              />
+            </div>
           </div>
           <h1 className="font-display text-4xl font-semibold tracking-tight">{isCreating ? "Create a private AI community draft" : "Join your cultural club"}</h1>
           <p className="mx-auto mt-2 max-w-2xl text-[var(--muted)]">
