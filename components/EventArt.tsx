@@ -20,14 +20,29 @@ function hash(s: string): number {
 export function EventArt({
   seed,
   category,
+  imageUrl,
+  alt = "",
   className,
   size = 22,
 }: {
   seed: string;
   category: string;
+  imageUrl?: string;
+  alt?: string;
   className?: string;
   size?: number;
 }) {
+  if (imageUrl) {
+    return (
+      <div
+        aria-label={alt || undefined}
+        aria-hidden={alt ? undefined : true}
+        className={`bg-cover bg-center ${className ?? ""}`}
+        style={{ backgroundImage: `url(${imageUrl})` }}
+      />
+    );
+  }
+
   const h = hash(seed + category);
   const a = h % 360;
   const b = (a + 40 + (h % 60)) % 360;

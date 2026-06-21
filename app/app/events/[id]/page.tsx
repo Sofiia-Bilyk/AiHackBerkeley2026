@@ -74,7 +74,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
 
       {/* header */}
       <Card className="overflow-hidden">
-        <EventArt seed={event.imageSeed} category={event.category} className="h-32 w-full" size={44} />
+        <EventArt seed={event.imageSeed} category={event.category} imageUrl={event.imageUrl} alt="" className="h-32 w-full" size={44} />
         <div className="p-5">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {event.source === "ai" ? (

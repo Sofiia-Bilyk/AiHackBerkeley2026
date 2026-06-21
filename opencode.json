@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "midjourney": {
+      "type": "remote",
+      "url": "https://mcp.midjourney.com/mcp",
+      "enabled": true,
+      "timeout": 120000
+    }
+  }
+}

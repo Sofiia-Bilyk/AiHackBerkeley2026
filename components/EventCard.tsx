@@ -24,7 +24,7 @@ export function EventCard({ event }: { event: CulturalEvent }) {
       className="group block overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface)] transition-shadow hover:shadow-md"
     >
       <div className="flex">
-        <EventArt seed={event.imageSeed} category={event.category} className="w-20 shrink-0" size={26} />
+        <EventArt seed={event.imageSeed} category={event.category} imageUrl={event.imageUrl} alt="" className="w-20 shrink-0" size={26} />
         <div className="min-w-0 flex-1 p-3.5">
           <div className="mb-1 flex items-center gap-2">
             <Badge tone={statusTone[event.status]}>{labelFor(event.status)}</Badge>
