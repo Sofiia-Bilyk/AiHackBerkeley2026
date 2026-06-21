@@ -20,17 +20,20 @@ export function attendance(eventId: string) {
   };
 }
 
-export function upcomingEvents(communityId: string): CulturalEvent[] {
-  return db
-    .eventsOf(communityId)
-    .filter((e) => e.status === "planned" || e.status === "gauging");
+export function upcomingEvents(communityId: string, viewer?: Profile): CulturalEvent[] {
+  return visibleEventsForViewer(db.eventsOf(communityId), viewer).filter((e) => e.status === "planned" || e.status === "gauging");
 }
 
-export function pastEvents(communityId: string): CulturalEvent[] {
-  return db
-    .eventsOf(communityId)
+export function pastEvents(communityId: string, viewer?: Profile): CulturalEvent[] {
+  return visibleEventsForViewer(db.eventsOf(communityId), viewer)
     .filter((e) => e.status === "completed")
     .reverse();
+}
+
+function visibleEventsForViewer(events: CulturalEvent[], viewer?: Profile): CulturalEvent[] {
+  if (!viewer || viewer.isDemoSeed) return events;
+  const joinedAt = +new Date(viewer.joinedAt);
+  return events.filter((event) => +new Date(event.createdAt) >= joinedAt);
 }
 
 /** Members within the community's proximity radius of `me`, nearest first. */

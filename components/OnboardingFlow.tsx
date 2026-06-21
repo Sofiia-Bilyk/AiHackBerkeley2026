@@ -9,6 +9,7 @@ export function OnboardingFlow({ nationalities, initialNationality, creating = f
   const [nationality, setNationality] = useState(initialNationality ?? nationalities[0]?.nationality ?? "Ukrainian");
   return (
     <form action={createAccountAction} className="space-y-5">
+      <input type="hidden" name="creating" value={creating ? "true" : "false"} />
       <Card className="space-y-4 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>

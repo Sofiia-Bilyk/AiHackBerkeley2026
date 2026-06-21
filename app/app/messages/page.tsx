@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { nearbyMembers } from "@/lib/selectors";
 import { Avatar, Card, SectionTitle } from "@/components/ui";
 import { dmChannelId, relativeTime } from "@/lib/utils";

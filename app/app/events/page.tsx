@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { pastEvents, upcomingEvents } from "@/lib/selectors";
 import { generateEventAction, proposeEventAction } from "@/app/actions";
 import { EventCard } from "@/components/EventCard";
@@ -16,8 +16,8 @@ export default async function EventsPage() {
   const community = communityId ? communityById(communityId) : undefined;
   if (!community || !communityId) redirect("/");
 
-  const upcoming = upcomingEvents(communityId);
-  const past = pastEvents(communityId);
+  const upcoming = upcomingEvents(communityId, me);
+  const past = pastEvents(communityId, me);
 
   return (
     <div className="space-y-7">

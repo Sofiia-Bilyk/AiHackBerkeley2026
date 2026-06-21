@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type {
   CulturalContent,
+  Community,
   CulturalEvent,
   EventTask,
   ID,
@@ -20,6 +21,7 @@ import { seedDatabase } from "./seed";
 
 export interface Database {
   profiles: Profile[];
+  communities: Community[];
   memberships: Membership[];
   events: CulturalEvent[];
   tasks: EventTask[];
@@ -35,6 +37,7 @@ const SNAPSHOT_PATH = path.join(process.cwd(), "data", "db.json");
 function emptyDb(): Database {
   return {
     profiles: [],
+    communities: [],
     memberships: [],
     events: [],
     tasks: [],
@@ -52,6 +55,7 @@ function loadFromDisk(): Database | null {
       const raw = fs.readFileSync(SNAPSHOT_PATH, "utf-8");
       const parsed = JSON.parse(raw) as Database;
       if (parsed && parsed.seeded) {
+        parsed.communities ??= [];
         // Migrate snapshots created before task completion replaced verification.
         parsed.tasks = parsed.tasks.map((task) => {
           const legacyStatus = task.status as string;
@@ -119,6 +123,14 @@ export const db = {
   },
   profiles() {
     return database.profiles;
+  },
+
+  // ---- runtime-created communities ----
+  createdCommunities() {
+    return database.communities;
+  },
+  communities() {
+    return database.communities;
   },
 
   // ---- communities are static seed config (see seed.ts) ----

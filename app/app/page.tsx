@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById, upcomingOccasions } from "@/lib/communities";
+import { upcomingOccasions } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { computeInsights } from "@/lib/ai/memory";
 import { nearbyMembers, upcomingEvents } from "@/lib/selectors";
 import { generateEventAction } from "@/app/actions";
@@ -18,7 +19,7 @@ export default async function Dashboard() {
   const community = communityId ? communityById(communityId) : undefined;
   if (!community || !communityId) redirect("/");
 
-  const events = upcomingEvents(communityId);
+  const events = upcomingEvents(communityId, me);
   const near = nearbyMembers(me, communityId).slice(0, 5);
   const occasions = upcomingOccasions(community.nationality, new Date(), 150);
   const nextOccasion = occasions[0];

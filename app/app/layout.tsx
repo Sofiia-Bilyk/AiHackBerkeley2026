@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { accentStyle } from "@/lib/theme";
 import { MobileNavLinks, NavLinks } from "@/components/NavLinks";
-import { Avatar } from "@/components/ui";
+import { Avatar, ButtonLink } from "@/components/ui";
 import { logout } from "@/app/actions";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -37,6 +37,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 {community.demonym} club
               </div>
               <p className="mt-0.5 text-xs text-[var(--muted)]">{community.region.label}</p>
+              <ButtonLink href="/#communities-heading" variant="secondary" size="sm" className="mt-3 w-full">
+                View all communities
+              </ButtonLink>
             </div>
           )}
 
@@ -65,7 +68,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg accent-gradient text-sm font-bold text-white">C</span>
           <span className="font-display font-semibold">Connect</span>
         </Link>
-        <Avatar name={me.name} color={me.avatarColor} size={30} />
+        <div className="flex items-center gap-2">
+          <Link href="/#communities-heading" className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--accent-ink)]">
+            All communities
+          </Link>
+          <Avatar name={me.name} color={me.avatarColor} size={30} />
+        </div>
       </div>
 
       {/* main */}

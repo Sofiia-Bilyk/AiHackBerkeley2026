@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { COMMUNITIES, CREATABLE_COMMUNITIES } from "@/lib/communities";
+import { onboardingCommunities } from "@/lib/community-registry";
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Badge, Card, SystemNotice } from "@/components/ui";
 import { ArrowLeft, BookOpen, EyeOff, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
 
 export default async function OnboardingPage({ searchParams }: { searchParams: Promise<{ community?: string; create?: string }> }) {
   const { community, create } = await searchParams;
-  const available = create === "true" ? [...COMMUNITIES, ...CREATABLE_COMMUNITIES] : COMMUNITIES;
+  const available = onboardingCommunities(create === "true");
   const nationalities = available.map((c) => ({ nationality: c.nationality, flagEmoji: c.flagEmoji }));
   const initialNationality = nationalities.some((item) => item.nationality === community)
     ? community

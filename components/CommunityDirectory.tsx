@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin, Search, Sparkles, X } from "lucide-react";
-import { COMMUNITIES } from "@/lib/communities";
+import type { Community } from "@/lib/types";
 import { Badge, Card } from "@/components/ui";
 
 const nextEvents: Record<string, { day: string; name: string }> = {
@@ -21,14 +21,14 @@ const nextEvents: Record<string, { day: string; name: string }> = {
   Swedish: { day: "Sat, Jun 20", name: "Midsummer table" },
 };
 
-export function CommunityDirectory({ featuredNationalities }: { featuredNationalities?: string[] }) {
+export function CommunityDirectory({ communities: allCommunities, featuredNationalities }: { communities: Community[]; featuredNationalities?: string[] }) {
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(!featuredNationalities);
   const communities = useMemo(() => {
-    if (!featuredNationalities || showAll) return COMMUNITIES;
+    if (!featuredNationalities || showAll) return allCommunities;
     const featured = new Set(featuredNationalities);
-    return COMMUNITIES.filter((community) => featured.has(community.nationality));
-  }, [featuredNationalities, showAll]);
+    return allCommunities.filter((community) => featured.has(community.nationality));
+  }, [allCommunities, featuredNationalities, showAll]);
   const filtered = useMemo(() => {
     const value = query.trim().toLocaleLowerCase();
     if (!value) return communities;
@@ -79,7 +79,7 @@ export function CommunityDirectory({ featuredNationalities }: { featuredNational
             </button>
           </div>
           <p className="px-2 text-sm text-[var(--muted)]">
-            Showing {filtered.length} of {COMMUNITIES.length}
+            Showing {filtered.length} of {allCommunities.length}
           </p>
         </div>
       )}

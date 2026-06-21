@@ -1,5 +1,6 @@
 import { CommunityDirectory } from "@/components/CommunityDirectory";
 import { Badge, Card } from "@/components/ui";
+import { allCommunities } from "@/lib/community-registry";
 import { midjourneyPastEventImages } from "@/lib/midjourney-images";
 import { CalendarDays, MapPin } from "lucide-react";
 
@@ -46,6 +47,7 @@ const userReviews = [
 ];
 
 export default function Landing() {
+  const communities = allCommunities();
   return (
     <main id="main-content" className="texture-weave min-h-screen">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:py-12">
@@ -70,7 +72,7 @@ export default function Landing() {
               <h2 id="communities-heading" className="font-display text-3xl font-semibold">Available communities</h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">Choose the cultural group you want to join.</p>
             </div>
-            <CommunityDirectory featuredNationalities={featuredCommunities} />
+            <CommunityDirectory communities={communities} featuredNationalities={featuredCommunities} />
           </div>
 
           <aside className="space-y-4" aria-label="Public past events preview">

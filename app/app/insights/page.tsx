@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { computeInsights, memoryBackend } from "@/lib/ai/memory";
 import { Avatar, Badge, Card, SectionTitle } from "@/components/ui";
 import { Sparkles, TrendingUp, ShieldAlert, Database } from "lucide-react";

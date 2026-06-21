@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { CultureAsk } from "@/components/CultureAsk";
 import { Badge, Card, SectionTitle } from "@/components/ui";
 import type { CulturalContentKind } from "@/lib/types";

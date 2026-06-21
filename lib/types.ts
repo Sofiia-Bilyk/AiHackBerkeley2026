@@ -45,6 +45,7 @@ export interface Profile {
   /** ISO date until which the user is restricted from events, if any. */
   restrictedUntil?: string;
   isDemoSeed?: boolean;
+  startsEmpty?: boolean;
 }
 
 export interface Membership {

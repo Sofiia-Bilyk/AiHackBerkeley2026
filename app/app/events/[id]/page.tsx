@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { attendance, isRestricted, taskProgress } from "@/lib/selectors";
 import { commitEventAction } from "@/app/actions";
 import { EventArt } from "@/components/EventArt";

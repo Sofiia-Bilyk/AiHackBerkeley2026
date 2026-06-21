@@ -7,7 +7,7 @@
 
 import "server-only";
 import { db } from "../store";
-import { communityById } from "../communities";
+import { communityById } from "../community-registry";
 import type { CommunityInsights, ID } from "../types";
 
 // ---- pluggable KV (in-memory default, Upstash Redis when configured) --------

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
-import { communityById } from "@/lib/communities";
+import { communityById } from "@/lib/community-registry";
 import { computeInsights } from "@/lib/ai/memory";
 import { nearbyMembers } from "@/lib/selectors";
 import { Avatar, Badge, Card, SectionTitle, SystemNotice } from "@/components/ui";

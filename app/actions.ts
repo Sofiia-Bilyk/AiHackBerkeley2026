@@ -7,9 +7,9 @@ import { clearSession, getCurrentProfile, setSession } from "@/lib/session";
 import { generateEvent } from "@/lib/ai/events";
 import { runCoordinatorPass } from "@/lib/ai/coordinator";
 import { complete, hasApiKey } from "@/lib/ai/client";
-import { communityById, communityByNationality } from "@/lib/communities";
+import { communityById, communityByNationality } from "@/lib/community-registry";
 import { sendPoke } from "@/lib/poke";
-import type { Profile } from "@/lib/types";
+import type { Community, Profile } from "@/lib/types";
 import { daysFromNow, dmChannelId, newId, nowIso } from "@/lib/utils";
 import type { CulturalEvent, EventTask, Message } from "@/lib/types";
 
@@ -293,8 +293,16 @@ export async function createAccountAction(formData: FormData) {
   const city = String(formData.get("city") || "").trim() || "Berkeley, CA";
   const nationality = String(formData.get("nationality") || "Ukrainian");
   const secondary = String(formData.get("secondary") || "").trim() || undefined;
+  const creating = formData.get("creating") === "true";
 
-  const community = communityByNationality(nationality);
+  const template = communityByNationality(nationality);
+  const community: Community | undefined = creating && template
+    ? {
+        ...template,
+        id: newId("comm"),
+        createdAt: nowIso(),
+      }
+    : template;
   // place near the community's region for the demo
   const lat = community ? community.region.lat + (Math.random() - 0.5) * 0.1 : 37.8715;
   const lng = community ? community.region.lng + (Math.random() - 0.5) * 0.1 : -122.273;
@@ -314,9 +322,11 @@ export async function createAccountAction(formData: FormData) {
     bio: "Just joined Connect.",
     joinedAt: nowIso(),
     strikes: 0,
+    startsEmpty: creating,
   };
   db.raw.profiles.push(profile);
   if (community) {
+    if (creating) db.raw.communities.push(community);
     db.raw.memberships.push({ id: newId("mship"), profileId, communityId: community.id, joinedAt: nowIso(), role: "member" });
   }
   db.save();

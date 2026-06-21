@@ -6,7 +6,8 @@
 import "server-only";
 import { completeJson, hasApiKey } from "./client";
 import { attendanceMemo } from "./memory";
-import { communityById, upcomingOccasions } from "../communities";
+import { upcomingOccasions } from "../communities";
+import { communityById } from "../community-registry";
 import { db } from "../store";
 import type { ID, MaterialItem, SuggestedVenue } from "../types";
 
