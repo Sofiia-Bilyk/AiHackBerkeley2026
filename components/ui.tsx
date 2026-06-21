@@ -8,20 +8,20 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "accent" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--background)] active:scale-[0.98]";
+  "spring-motion inline-flex min-h-11 items-center justify-center gap-2 rounded-full font-medium transition-all disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] active:scale-[0.96]";
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: "bg-[var(--primary)] text-[var(--primary-ink)] hover:brightness-110 shadow-sm",
-  accent: "accent-gradient text-white hover:brightness-105 shadow-sm",
-  secondary: "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--line)] hover:bg-[var(--surface-2)]",
-  ghost: "text-[var(--foreground)] hover:bg-[var(--surface-2)]",
+  primary: "bg-[var(--primary)] text-[var(--primary-ink)] shadow-sm hover:shadow-md hover:brightness-105",
+  accent: "accent-gradient text-white shadow-sm hover:shadow-md hover:brightness-105",
+  secondary: "bg-[var(--primary-container)] text-[var(--on-primary-container)] hover:bg-[var(--surface-container)]",
+  ghost: "text-[var(--foreground)] hover:bg-[var(--primary-container)]/60",
   danger: "bg-[#9a2f2f] text-white hover:brightness-110",
 };
 
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: "text-sm px-3 py-1.5",
+  sm: "text-sm px-3 py-2",
   md: "text-sm px-4 py-2.5",
-  lg: "text-base px-6 py-3",
+  lg: "text-base px-6 py-3.5",
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -52,7 +52,7 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+        "rounded-[var(--radius-card)] border border-[var(--outline-variant)] bg-[var(--surface)] shadow-[0_1px_3px_rgba(33,25,35,0.08)]",
         className,
       )}
       {...props}
@@ -68,7 +68,7 @@ export function Badge({
   ...props
 }: React.HTMLAttributes<HTMLSpanElement> & { tone?: "neutral" | "accent" | "green" | "amber" | "red" | "blue" }) {
   const tones: Record<string, string> = {
-    neutral: "bg-[var(--surface-2)] text-[var(--muted)]",
+    neutral: "bg-[var(--surface-container)] text-[var(--muted)]",
     accent: "bg-[var(--accent-soft)] text-[var(--accent-ink)]",
     green: "bg-emerald-50 text-emerald-700",
     amber: "bg-amber-50 text-amber-700",

@@ -4,7 +4,7 @@ import { getCurrentProfile } from "@/lib/session";
 import { db } from "@/lib/store";
 import { communityById } from "@/lib/communities";
 import { accentStyle } from "@/lib/theme";
-import { NavLinks } from "@/components/NavLinks";
+import { MobileNavLinks, NavLinks } from "@/components/NavLinks";
 import { Avatar } from "@/components/ui";
 import { logout } from "@/app/actions";
 
@@ -69,7 +69,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* main */}
-      <main className="min-w-0 flex-1 pt-12 md:pt-0 pb-10">{children}</main>
+      <main id="main-content" className="min-w-0 flex-1 pb-28 pt-12 md:pb-10 md:pt-0">{children}</main>
+      <MobileNavLinks />
     </div>
   );
 }

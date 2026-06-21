@@ -2,32 +2,43 @@
 
 /* ---- Connect design tokens — warm, editorial, cultural ---- */
 :root {
-  --background: #faf6ef; /* warm paper */
-  --surface: #fffdfa;
-  --surface-2: #f3ece0;
-  --foreground: #241f1a; /* warm ink */
-  --muted: #6f655a;
-  --line: #e7ddcd;
-  --primary: #b4541f; /* terracotta */
-  --primary-ink: #fff8f2;
-  --ring: #d98a52;
+  --background: #fff7fd; /* Material 3 expressive surface tint */
+  --surface: #fffafc;
+  --surface-2: #f5edf7;
+  --surface-container: #f0e7f2;
+  --foreground: #211923;
+  --muted: #6f5d72;
+  --line: #e4d6e8;
+  --outline: #8c7d91;
+  --outline-variant: #d6c6dc;
+  --primary: #6d3bd1;
+  --primary-ink: #ffffff;
+  --primary-container: #eaddff;
+  --on-primary-container: #25005a;
+  --ring: #7c4dff;
+  --motion-spring: cubic-bezier(0.2, 0, 0, 1);
 
   /* per-community accent — overridden inline on community surfaces */
-  --accent-from: #b4541f;
-  --accent-to: #e0a458;
-  --accent-soft: #f6ede0;
-  --accent-ink: #7a3a14;
+  --accent-from: #6d3bd1;
+  --accent-to: #00a878;
+  --accent-soft: #eaddff;
+  --accent-ink: #25005a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-container: var(--surface-container);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
   --color-primary: var(--primary);
   --color-primary-ink: var(--primary-ink);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
   --color-accent-from: var(--accent-from);
   --color-accent-to: var(--accent-to);
   --color-accent-soft: var(--accent-soft);
@@ -36,7 +47,8 @@
   --font-sans: var(--font-sans-stack);
   --font-display: var(--font-display-stack);
 
-  --radius-card: 1rem;
+  --radius-card: 1.5rem;
+  --radius-expressive: 2rem 1.25rem 2.5rem 1.25rem;
 }
 
 body {
@@ -46,19 +58,91 @@ body {
   font-feature-settings: "ss01";
 }
 
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 50;
+  transform: translateY(-150%);
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--surface);
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+}
+
 .font-display {
   font-family: var(--font-display), Georgia, serif;
+}
+
+.text-emphasized {
+  font-variation-settings: "SOFT" 80, "WONK" 1;
+  letter-spacing: -0.045em;
+}
+
+.shape-expressive {
+  border-radius: var(--radius-expressive);
 }
 
 /* subtle folk-textile texture for hero surfaces */
 .texture-weave {
   background-image:
-    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 8px),
-    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 8px);
+    radial-gradient(circle at 14% 8%, rgba(109, 59, 209, 0.18), transparent 28rem),
+    radial-gradient(circle at 88% 0%, rgba(0, 168, 120, 0.16), transparent 24rem),
+    radial-gradient(circle at 82% 76%, rgba(255, 184, 0, 0.14), transparent 22rem),
+    radial-gradient(circle at 35% 95%, rgba(255, 92, 138, 0.1), transparent 20rem);
 }
+
+.folk-photo {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #b85c38;
+}
+
+.folk-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(255, 253, 248, 0.5) 0 9%, transparent 10%),
+    radial-gradient(circle at 75% 24%, rgba(255, 211, 130, 0.55) 0 7%, transparent 8%),
+    radial-gradient(circle at 48% 70%, rgba(33, 79, 65, 0.45) 0 16%, transparent 17%),
+    linear-gradient(135deg, var(--photo-a), var(--photo-b) 48%, var(--photo-c));
+}
+
+.folk-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, transparent 30%, rgba(20, 14, 10, 0.52)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 16px);
+  mix-blend-mode: soft-light;
+}
+
+.photo-midsummer { --photo-a: #244f41; --photo-b: #d99a29; --photo-c: #b85c38; }
+.photo-obon { --photo-a: #6f3f63; --photo-b: #d99a29; --photo-c: #253b73; }
+.photo-chuseok { --photo-a: #253b73; --photo-b: #b85c38; --photo-c: #244f41; }
 
 .accent-gradient {
   background-image: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+}
+
+.spring-motion {
+  transition-duration: 220ms;
+  transition-timing-function: var(--motion-spring);
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -75,3 +159,14 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-rise { animation: rise 0.35s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
