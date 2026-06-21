@@ -8,6 +8,7 @@ import { generateEvent } from "@/lib/ai/events";
 import { runCoordinatorPass } from "@/lib/ai/coordinator";
 import { complete, hasApiKey } from "@/lib/ai/client";
 import { communityById, communityByNationality } from "@/lib/communities";
+import { sendPoke } from "@/lib/poke";
 import type { Profile } from "@/lib/types";
 import { daysFromNow, dmChannelId, newId, nowIso } from "@/lib/utils";
 import type { CulturalEvent, EventTask, Message } from "@/lib/types";
@@ -89,6 +90,9 @@ export async function generateEventAction(communityId: string) {
   }
 
   db.save();
+  if (status === "planned") {
+    await pokeEventMembers(eventId, `New event: ${event.title}. Volunteer tasks are ready to claim.`, "event_confirmed");
+  }
   revalidatePath("/app");
   redirect(`/app/events/${eventId}`);
 }
@@ -153,6 +157,7 @@ export async function commitEventAction(eventId: string) {
   db.raw.tasks.push(...tasks);
   db.raw.messages.push(systemMsg(eventId, `${event.title} is confirmed. ${tasks.length} tasks created — claim what you can help with.`));
   db.save();
+  await pokeEventMembers(eventId, `Confirmed: ${event.title}. New volunteer tasks are open.`, "event_confirmed");
   revalidatePath(`/app/events/${eventId}`);
 }
 
@@ -198,6 +203,12 @@ export async function volunteerAction(taskId: string) {
   }
   db.raw.messages.push(systemMsg(task.eventId, `${me.name.split(" ")[0]} volunteered for "${task.title}". Thank you.`));
   db.save();
+  const event = db.event(task.eventId);
+  await sendPoke(me, {
+    reason: "task_claimed",
+    message: event ? `You claimed "${task.title}" for ${event.title}. Connect will keep the group coordinated.` : `You claimed "${task.title}".`,
+    metadata: { taskId, eventId: task.eventId },
+  });
   revalidatePath(`/app/events/${task.eventId}`);
 }
 
@@ -226,6 +237,12 @@ export async function completeTaskAction(taskId: string) {
   db.raw.messages.push(systemMsg(task.eventId, `"${task.title}" is complete. Thank you, ${me.name.split(" ")[0]}.`));
 
   db.save();
+  const event = db.event(task.eventId);
+  await sendPoke(me, {
+    reason: "task_completed",
+    message: event ? `Nice work. "${task.title}" is marked complete for ${event.title}.` : `Nice work. "${task.title}" is marked complete.`,
+    metadata: { taskId, eventId: task.eventId },
+  });
   revalidatePath(`/app/events/${task.eventId}`);
 }
 
@@ -258,6 +275,11 @@ export async function sendDmAction(toProfileId: string, body: string) {
   if (!me) throw new Error("Not signed in");
   const channelId = dmChannelId(me.id, toProfileId);
   await postMessageAction(channelId, "dm", body);
+  await sendPoke(db.profile(toProfileId), {
+    reason: "dm",
+    message: `${me.name.split(" ")[0]} sent you a Connect message: ${body.trim().slice(0, 120)}`,
+    metadata: { fromProfileId: me.id, channelId },
+  });
   revalidatePath(`/app/messages/${toProfileId}`);
 }
 
@@ -267,7 +289,7 @@ export async function sendDmAction(toProfileId: string, body: string) {
 
 export async function createAccountAction(formData: FormData) {
   const name = String(formData.get("name") || "").trim() || "New Member";
-  const email = String(formData.get("email") || "").trim() || "member@demo.connect";
+  const phone = String(formData.get("phone") || "").trim() || "+1 555 010 0000";
   const city = String(formData.get("city") || "").trim() || "Berkeley, CA";
   const nationality = String(formData.get("nationality") || "Ukrainian");
   const secondary = String(formData.get("secondary") || "").trim() || undefined;
@@ -282,7 +304,7 @@ export async function createAccountAction(formData: FormData) {
   const profile: Profile = {
     id: profileId,
     name,
-    email,
+    phone,
     avatarColor: palette[Math.floor(Math.random() * palette.length)],
     city,
     lat,
@@ -332,5 +354,29 @@ function systemMsg(eventId: string, body: string): Message {
 }
 
 function communityLocation(communityId: string): string {
-  return communityId === "comm_ng" ? "Oakland, CA" : "Berkeley, CA";
+  void communityId;
+  return "Berkeley, CA";
+}
+
+async function pokeEventMembers(eventId: string, message: string, reason: "event_confirmed") {
+  const event = db.event(eventId);
+  if (!event) return;
+  const profileIds = new Set(
+    db.rsvpsOf(eventId)
+      .filter((rsvp) => rsvp.status !== "declined")
+      .map((rsvp) => rsvp.profileId),
+  );
+  if (profileIds.size === 0) {
+    db.membersOf(event.communityId).slice(0, 3).forEach((member) => profileIds.add(member.id));
+  }
+
+  await Promise.all(
+    [...profileIds].map((profileId) =>
+      sendPoke(db.profile(profileId), {
+        reason,
+        message,
+        metadata: { eventId, communityId: event.communityId },
+      }),
+    ),
+  );
 }

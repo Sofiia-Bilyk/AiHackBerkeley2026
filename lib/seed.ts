@@ -3,6 +3,7 @@
 // mid-flight, plus completed events that feed the "club manager" analytics.
 
 import type { Database } from "./store";
+import { midjourneyPastEventImages } from "./midjourney-images";
 import { daysFromNow } from "./utils";
 import type {
   CulturalContent,
@@ -23,7 +24,7 @@ const ISO = (d: number) => daysFromNow(d);
 
 function profile(p: Partial<Profile> & Pick<Profile, "id" | "name" | "city" | "lat" | "lng" | "primaryNationality" | "avatarColor">): Profile {
   return {
-    email: `${p.name.split(" ")[0].toLowerCase()}@demo.connect`,
+    phone: "+1 555 010 0000",
     secondaryInterest: undefined,
     bio: undefined,
     joinedAt: ISO(-40),
@@ -177,6 +178,7 @@ function completedEvent(
   daysAgo: number,
   imageSeed: string,
 ): CulturalEvent {
+  const image = midjourneyPastEventImages[imageSeed];
   return {
     id,
     communityId,
@@ -195,6 +197,8 @@ function completedEvent(
     createdAt: ISO(-daysAgo - 7),
     coordinatorTick: 3,
     imageSeed,
+    imageUrl: image?.url,
+    imagePrompt: image?.prompt,
   };
 }
 

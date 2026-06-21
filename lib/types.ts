@@ -31,7 +31,7 @@ export interface Community {
 export interface Profile {
   id: ID;
   name: string;
-  email: string;
+  phone: string;
   avatarColor: string; // hex seed for generated avatar
   city: string;
   lat: number;
@@ -99,6 +99,8 @@ export interface CulturalEvent {
   /** Demo clock: how many coordinator "advance" passes have run. */
   coordinatorTick: number;
   imageSeed: string; // for decorative gradient art
+  imageUrl?: string; // generated event image, usually from Midjourney
+  imagePrompt?: string; // prompt used to generate the event image
 }
 
 export type TaskStatus =
