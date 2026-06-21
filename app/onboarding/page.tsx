@@ -28,7 +28,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
                 width={512}
                 height={512}
                 priority
-                className="h-12 w-auto"
+                className="h-16 w-auto"
               />
             </div>
           </div>

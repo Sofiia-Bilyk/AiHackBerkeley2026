@@ -60,7 +60,7 @@ export default function Landing() {
               width={512}
               height={512}
               priority
-              className="h-14 w-auto"
+              className="h-20 w-auto"
             />
             <Badge tone="accent">AI cultural-club manager</Badge>
           </div>

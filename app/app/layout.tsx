@@ -31,7 +31,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               width={512}
               height={512}
               priority
-              className="h-10 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
 
@@ -76,7 +76,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             width={512}
             height={512}
             priority
-            className="h-8 w-auto"
+            className="h-10 w-auto"
           />
         </Link>
         <div className="flex items-center gap-2">
